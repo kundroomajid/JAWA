@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "";
+    private final String API_KEY = "YOUR OPEN WEATHER MAP API KEY HERE";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
@@ -270,9 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     tvPressure.setText(pressure);
                     tvWindSpeed.setText(windSpeed);
                     //set icon here
-                    System.out.println("Icon :"+forecastIcon);
                     setForecastIcon(forecastIcon,imForecastIcon);
-//                    imForecastIcon.setImageResource(res);
                     pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 }
                 else if (responseCode == 404 )
