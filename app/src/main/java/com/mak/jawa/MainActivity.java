@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,15 +39,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
-    ImageView imSearchBtn;
+    ImageView imSearchBtn, imForecastIcon;
     EditText etSearchBox;
     ProgressBar pbLoading;
     String searchQuery, latitude, longitude, cityName, countryName,updatedAtText,temperature,forecast,
-            humidity, minTemperature, maxTemperature, pressure, windSpeed, sunrises,sunsets;
+            humidity, realFeel, pressure, windSpeed, sunrises,sunsets, forecastIcon ;
     TextView tvCityName, tvCountryName, tvLastUpdatedTime, tvTemperature, tvForecast, tvHumidity,
-            tvMinTemperature, tvMaxTemperature, tvSunrises, tvSunsets, tvPressure, tvWindSpeed;
+            tvRealFeel, tvSunrises, tvSunsets, tvPressure, tvWindSpeed;
     Long updatedAt,rise,set;
 
+    Map<String, String> forecastIcons = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             tvTemperature = (TextView) findViewById(R.id.text_temperature);
             tvForecast = (TextView) findViewById(R.id.text_forecast);
             tvHumidity = (TextView) findViewById(R.id.text_humidity);
-            tvMinTemperature = (TextView) findViewById(R.id.text_min_temp);
-            tvMaxTemperature = (TextView) findViewById(R.id.text_max_temp);
+            tvRealFeel = (TextView) findViewById(R.id.text_real_feel);
             tvSunrises = (TextView) findViewById(R.id.text_sunrise);
             tvSunsets = (TextView) findViewById(R.id.text_sunset);
             tvPressure = (TextView) findViewById(R.id.text_pressure);
             tvWindSpeed = (TextView) findViewById(R.id.text_wind_speed);
+            imForecastIcon = (ImageView) findViewById(R.id.image_forecast);
 
             etSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 public boolean onEditorAction(TextView v, int actionId,
@@ -140,15 +143,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void getWeatherData()
     {
-        searchQuery = etSearchBox.getText().toString();
-        if (!searchQuery.isEmpty()) {
-            pbLoading.setVisibility(ProgressBar.VISIBLE);
-            new weatherTask("textbox").execute();
-        }
-        else
+        if(isNetworkAvailable())
         {
-            Toast.makeText(MainActivity.this, "Please Enter a Location to search ", Toast.LENGTH_SHORT).show();
+            searchQuery = etSearchBox.getText().toString();
+            if (!searchQuery.isEmpty()) {
+                pbLoading.setVisibility(ProgressBar.VISIBLE);
+                new weatherTask("textbox").execute();
+            }
+            else
+            {
+                Toast.makeText(MainActivity.this, "Please Enter a Location to search ", Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
     private boolean checkGpsStatus()
     {
@@ -243,10 +250,10 @@ public class MainActivity extends AppCompatActivity {
                     updatedAt = jsonObj.getLong("dt");
                     updatedAtText = "Last Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
                     temperature = main.getString("temp");
+                    forecastIcon = weather.getString("icon");
                     forecast = weather.getString("description");
                     humidity = main.getString("humidity");
-                    minTemperature = main.getString("temp_min");
-                    maxTemperature = main.getString("temp_max");
+                    realFeel = main.getString("feels_like");
                     pressure = main.getString("pressure");
                     windSpeed = wind.getString("speed");
                     rise = sys.getLong("sunrise");
@@ -260,12 +267,15 @@ public class MainActivity extends AppCompatActivity {
                     tvTemperature.setText(temperature + "°C");
                     tvForecast.setText(forecast);
                     tvHumidity.setText(humidity);
-                    tvMinTemperature.setText(minTemperature);
-                    tvMaxTemperature.setText(maxTemperature);
+                    tvRealFeel.setText(realFeel);
                     tvSunrises.setText(sunrises);
                     tvSunsets.setText(sunsets);
                     tvPressure.setText(pressure);
                     tvWindSpeed.setText(windSpeed);
+                    //set icon here
+                    System.out.println("Icon :"+forecastIcon);
+                    setForecastIcon(forecastIcon,imForecastIcon);
+//                    imForecastIcon.setImageResource(res);
                     pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 }
                 else if (responseCode == 404 )
@@ -283,6 +293,42 @@ public class MainActivity extends AppCompatActivity {
                 pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 Toast.makeText(MainActivity.this, "Error:" + e.toString(), Toast.LENGTH_LONG).show();
             }
+        }
+
+        private void setForecastIcon(String forecastIcon,ImageView imForecastIcon)
+        {
+//            https://openweathermap.org/weather-conditions
+            forecastIcons.put("01d","ic_one_day");
+            forecastIcons.put("01n","ic_one_night");
+            forecastIcons.put("02d","ic_two_day");
+            forecastIcons.put("02n","ic_two_night");
+            forecastIcons.put("03d","ic_three_day");
+            forecastIcons.put("03n","ic_three_night");
+            forecastIcons.put("04d","ic_four_day");
+            forecastIcons.put("04n","ic_four_night");
+            forecastIcons.put("09d","ic_nine_day");
+            forecastIcons.put("09n","ic_nine_night");
+            forecastIcons.put("10d","ic_ten_day");
+            forecastIcons.put("10n","ic_ten_night");
+            forecastIcons.put("11d","ic_eleven_day");
+            forecastIcons.put("11n","ic_eleven_night");
+            forecastIcons.put("13d","ic_thirteen_day");
+            forecastIcons.put("13n","ic_thirteen_night");
+            forecastIcons.put("50d","ic_fifty_day");
+            forecastIcons.put("50n","ic_fifty_night");
+            String iconFile = forecastIcons.get(forecastIcon);
+            if(!iconFile.isEmpty())
+            {
+                String PACKAGE_NAME = getApplicationContext().getPackageName();
+                int imgId = getResources().getIdentifier(PACKAGE_NAME+":drawable/"+iconFile , null, null);
+                imForecastIcon.setImageBitmap(BitmapFactory.decodeResource(getResources(),imgId));
+            }
+            else {
+                imForecastIcon.setImageResource(R.drawable.ic_pressure);
+            }
+
+
+
         }
     }
 }

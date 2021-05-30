@@ -7,7 +7,7 @@
     android:background="#00BCD4"
     tools:context=".MainActivity"
     android:id="@+id/main_layout"
-    android:padding="10dp">
+    android:padding="5dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,7 +20,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/rounded_border"
             android:gravity="center_horizontal"
             android:padding="2dp">
@@ -38,13 +38,13 @@
                 android:inputType="text"
                 android:textColor="#ffffff"
                 android:textColorHint="#171616"
-                android:textSize="15sp"
+                android:textSize="17sp"
                 android:imeOptions="actionGo"/>
 
             <ImageView
                 android:id="@+id/image_search"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="?android:attr/selectableItemBackground"
@@ -56,30 +56,54 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/pb_loading"
+            <RelativeLayout
+                android:id="@+id/forecast"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/text1"
-                android:textSize="70sp"
-                android:textStyle="bold"
-                android:visibility="invisible" />
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                android:padding="2dp">
 
-            <TextView
-                android:id="@+id/text_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="7dp"
-                android:includeFontPadding="false"
-                android:textColor="@color/text2"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:freezesText="true"/>
+                <ImageView
+                    android:id="@+id/image_forecast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    />
+                <ProgressBar
+                    android:id="@+id/pb_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/image_forecast"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/design_default_color_background"
+                    android:textSize="70sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+                <TextView
+                    android:id="@+id/text_temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/text2"
+                    android:layout_toRightOf="@+id/pb_loading"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    android:freezesText="true"/>
+
+
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/text_forecast"
@@ -177,7 +201,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -215,6 +239,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="Feels Like"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/text1"
+                    android:textSize="16sp"
+                    android:freezesText="true"
+                    android:layout_marginStart="5dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_real_feel"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="38dp" />
+
+                <TextView
+                    android:id="@+id/text_real_feel"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="--"
+                    android:freezesText="true"
+                    android:layout_marginStart="80dp"
+                    android:textColor="@color/text1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -336,83 +399,6 @@
                     android:layout_marginStart="80dp"
                     android:textColor="@color/text1"
                     android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="Min Temperature"
-                    android:textColor="@color/text1"
-                    android:textSize="15sp"
-                    android:freezesText="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_gravity="center_vertical"
-                    android:textStyle="bold" />
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_tem_down"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="38dp" />
-
-                <TextView
-                    android:id="@+id/text_min_temp"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="--"
-                    android:freezesText="true"
-                    android:layout_marginStart="80dp"
-                    android:textColor="@color/text1"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="Max Temperature"
-                    android:textColor="@color/text1"
-                    android:textSize="15sp"
-                    android:freezesText="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_tem_up"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="38dp" />
-
-                <TextView
-                    android:id="@+id/text_max_temp"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="--"
-                    android:freezesText="true"
-                    android:layout_marginStart="80dp"
-                    android:textColor="@color/text1"
-                    android:textSize="16sp"/>
 
             </LinearLayout>
 
