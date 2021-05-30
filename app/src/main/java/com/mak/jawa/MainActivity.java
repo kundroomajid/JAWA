@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -35,7 +34,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String API = "98ed13acba37b8f64a391fd3a3748865";
+    private final String API_KEY = "";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
@@ -224,12 +223,10 @@ public class MainActivity extends AppCompatActivity {
             if (this.call_type == "coords") {
                 String lat = args[0];
                 String lon = args[1];
-                String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+ API);
-                Log.i("MAK", "doInBackground: "+response);
+                String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+ API_KEY);
                 return response;
             } else {
-                String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" + searchQuery + "&units=metric&appid=" + API);
-                Log.i("MAK", "doInBackground: "+response);
+                String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" + searchQuery + "&units=metric&appid=" + API_KEY);
                 return response;
             }
         }
