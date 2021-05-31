@@ -209,15 +209,18 @@ class GpsTracker extends Service implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+        Log.i("GPS", "onProviderDisabled: Gps is turned off");
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        Log.i("GPS", "onProviderEnabled: Gps is turned on");
 
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.i("GPS", "onStatusChanged: ");
     }
 
     @Override

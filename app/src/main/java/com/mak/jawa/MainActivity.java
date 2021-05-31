@@ -36,7 +36,7 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "5624ffafab761ff66e0136b356470496";
+    private final String API_KEY = "API KEY HERE";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
@@ -91,25 +91,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (isNetworkAvailable())
         {
-                pbLoading.setVisibility(ProgressBar.VISIBLE);
-                Map<String, String> coordinates = getLocation();
-                if (!coordinates.isEmpty())
-                {
-                    String latitude = coordinates.get("latitude");
-                    String longitude = coordinates.get("longitude");
-                    new weatherTask("coords").execute(latitude,longitude);
-                }
-                else
-                {
-                    toggleProgressStatus();
-                }
+            pbLoading.setVisibility(ProgressBar.VISIBLE);
+            Map<String, String> coordinates = getLocation();
+            if (!coordinates.isEmpty())
+            {
+                String latitude = coordinates.get("latitude");
+                String longitude = coordinates.get("longitude");
+                new weatherTask("coords").execute(latitude,longitude);
+            }
+            else
+            {
+                toggleProgressStatus();
+            }
         }
         else
         {
-
             View view = findViewById(R.id.main_layout);
             Snackbar snackbar = Snackbar
                     .make(view, "Internet Disconnected Please Check Your connection", Snackbar.LENGTH_INDEFINITE);
