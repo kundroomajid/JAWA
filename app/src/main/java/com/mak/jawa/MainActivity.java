@@ -31,10 +31,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "YOUR OPEN WEATHER MAP API KEY HERE";
+    private final String API_KEY = "5624ffafab761ff66e0136b356470496";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onEditorAction(TextView v, int actionId,
                                               KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_GO) {
-                        //hide keyboard
                         hideVirtualKeyboard();
                         getWeatherData();
                     }
@@ -93,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (isNetworkAvailable())
         {
-            if (checkGpsStatus())
-            {
                 pbLoading.setVisibility(ProgressBar.VISIBLE);
                 Map<String, String> coordinates = getLocation();
                 if (!coordinates.isEmpty())
@@ -103,10 +102,14 @@ public class MainActivity extends AppCompatActivity {
                     String longitude = coordinates.get("longitude");
                     new weatherTask("coords").execute(latitude,longitude);
                 }
-            }
+                else
+                {
+                    toggleProgressStatus();
+                }
         }
         else
         {
+
             View view = findViewById(R.id.main_layout);
             Snackbar snackbar = Snackbar
                     .make(view, "Internet Disconnected Please Check Your connection", Snackbar.LENGTH_INDEFINITE);
@@ -114,11 +117,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void enableLocationSettings() {
-        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(settingsIntent);
-    }
     private boolean isNetworkAvailable() {
         boolean isConnected = false;
         try {
@@ -140,13 +138,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void toggleProgressStatus()
+    {
+        try {
+            int visibiltyStatus = pbLoading.getVisibility();
+            if(visibiltyStatus == View.VISIBLE)
+            {
+                pbLoading.setVisibility(View.GONE);
+            }
+            else
+            {
+                pbLoading.setVisibility(View.VISIBLE);
+            }
+        }
+        catch (NullPointerException e)
+        {
+            Log.i(TAG, "toggleProgressStatus: "+e.getLocalizedMessage());
+        }
+
+
+    }
+
     private void getWeatherData()
     {
         if(isNetworkAvailable())
         {
             searchQuery = etSearchBox.getText().toString();
             if (!searchQuery.isEmpty()) {
-                pbLoading.setVisibility(ProgressBar.VISIBLE);
+                toggleProgressStatus();
                 new weatherTask("textbox").execute();
             }
             else
@@ -156,42 +175,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private boolean checkGpsStatus()
-    {
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if (!gpsEnabled) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setCancelable(true);
-            alertDialogBuilder.setMessage("Gps is turned Off Please turn it on");
-            alertDialogBuilder.setPositiveButton("Turn On",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            enableLocationSettings();
-                        }
-                    });
-
-            alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-            return false;
-        }
-        else {
-            return true;
-
-        }
-    }
     public Map<String, String> getLocation(){
         Map<String, String> coordinates = new HashMap<>();
-
         gpsTracker = new GpsTracker(MainActivity.this);
         if(gpsTracker.canGetLocation()){
             double lati = gpsTracker.getLatitude();
@@ -206,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
         return coordinates;
     }
 
-
-    class weatherTask extends AsyncTask<String, Void, String>{
+    private class weatherTask extends AsyncTask<String, Void, String>{
         private String call_type= "";
         public weatherTask(String call_type) {
             this.call_type = call_type;
@@ -271,21 +256,21 @@ public class MainActivity extends AppCompatActivity {
                     tvWindSpeed.setText(windSpeed);
                     //set icon here
                     setForecastIcon(forecastIcon,imForecastIcon);
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    toggleProgressStatus();
                 }
                 else if (responseCode == 404 )
                 {
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    toggleProgressStatus();
                     Toast.makeText(MainActivity.this, "Error : Location Not found ", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
                     Toast.makeText(MainActivity.this, "Sorry Some Error Occurred try again", Toast.LENGTH_LONG).show();
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    toggleProgressStatus();
                 }
 
             } catch (Exception e) {
-                pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                toggleProgressStatus();
                 Toast.makeText(MainActivity.this, "Error:" + e.toString(), Toast.LENGTH_LONG).show();
             }
         }

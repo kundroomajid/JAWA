@@ -177,11 +177,6 @@ class GpsTracker extends Service implements LocationListener {
         return this.canGetLocation;
     }
 
-    /**
-     * Function to show settings alert dialog
-     * On pressing Settings button will lauch Settings Options
-     * */
-
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
@@ -218,6 +213,7 @@ class GpsTracker extends Service implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
+
     }
 
     @Override
