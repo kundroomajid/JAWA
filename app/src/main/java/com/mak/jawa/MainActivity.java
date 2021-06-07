@@ -37,7 +37,7 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "5624ffafab761ff66e0136b356470496";
+    private final String API_KEY = "API_KEY_HERE";
     private final String SHARED_PREF_FILE = "com.mak.jawa.preferences";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
