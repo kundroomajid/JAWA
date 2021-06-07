@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -36,7 +37,8 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "API KEY HERE";
+    private final String API_KEY = "5624ffafab761ff66e0136b356470496";
+    private final String SHARED_PREF_FILE = "com.mak.jawa.preferences";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
 
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         {
             etSearchBox = (EditText) findViewById(R.id.edit_search_box);
@@ -91,14 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         if (isNetworkAvailable())
         {
-            pbLoading.setVisibility(ProgressBar.VISIBLE);
+            toggleProgressStatus();
             Map<String, String> coordinates = getLocation();
             if (!coordinates.isEmpty())
             {
@@ -118,6 +117,67 @@ public class MainActivity extends AppCompatActivity {
                     .make(view, "Internet Disconnected Please Check Your connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences sharedpreferences = getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("temp",tvTemperature.getText().toString());
+        editor.putString("city",tvCityName.getText().toString());
+        editor.putString("country",tvCountryName.getText().toString());
+        editor.putString("lastUpdatedTime",tvLastUpdatedTime.getText().toString());
+        editor.putString("forecast",tvForecast.getText().toString());
+        editor.putString("humidity",tvHumidity.getText().toString());
+        editor.putString("realFeel",tvRealFeel.getText().toString());
+        editor.putString("sunrises",tvSunrises.getText().toString());
+        editor.putString("sunsets",tvSunsets.getText().toString());
+        editor.putString("pressure",tvPressure.getText().toString());
+        editor.putString("windSpeed",tvWindSpeed.getText().toString());
+        editor.putString("forecastIcon",forecastIcon);
+        editor.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_FILE, MODE_PRIVATE);
+        //get required data from shared preferences
+        String temp  = sharedPreferences.getString("temp", "");
+        String city  = sharedPreferences.getString("city", "");
+        String country  = sharedPreferences.getString("country", "");
+        String lastUpdatedTime = sharedPreferences.getString("lastUpdatedTime", "");
+        String forecast = sharedPreferences.getString("forecast", "");
+        String humidity = sharedPreferences.getString("humidity", "");
+        String realFeel = sharedPreferences.getString("realFeel", "");
+        String sunrises = sharedPreferences.getString("sunrises", "");
+        String sunsets = sharedPreferences.getString("sunsets", "");
+        String pressure = sharedPreferences.getString("pressure", "");
+        String windSpeed = sharedPreferences.getString("windSpeed", "");
+        String forecastIcon = sharedPreferences.getString("forecastIcon","");
+        //set data in textviews
+       tvTemperature.setText(temp);
+       tvCityName.setText(city);
+       tvCountryName.setText(country);
+       tvLastUpdatedTime.setText(lastUpdatedTime);
+       tvForecast.setText(forecast);
+       tvHumidity.setText(humidity);
+       tvRealFeel.setText(realFeel);
+       tvSunrises.setText(sunrises);
+       tvSunsets.setText(sunsets);
+       tvPressure.setText(pressure);
+       tvWindSpeed.setText(windSpeed);
+       if (forecast != null) {
+           setForecastIcon(forecastIcon, imForecastIcon);
+       }
+
     }
 
     private boolean isNetworkAvailable() {
@@ -193,6 +253,40 @@ public class MainActivity extends AppCompatActivity {
             gpsTracker.showSettingsAlert();
         }
         return coordinates;
+    }
+    private void setForecastIcon(String forecastIcon,ImageView imForecastIcon)
+    {
+//            https://openweathermap.org/weather-conditions
+        forecastIcons.put("01d","ic_one_day");
+        forecastIcons.put("01n","ic_one_night");
+        forecastIcons.put("02d","ic_two_day");
+        forecastIcons.put("02n","ic_two_night");
+        forecastIcons.put("03d","ic_three_day");
+        forecastIcons.put("03n","ic_three_night");
+        forecastIcons.put("04d","ic_four_day");
+        forecastIcons.put("04n","ic_four_night");
+        forecastIcons.put("09d","ic_nine_day");
+        forecastIcons.put("09n","ic_nine_night");
+        forecastIcons.put("10d","ic_ten_day");
+        forecastIcons.put("10n","ic_ten_night");
+        forecastIcons.put("11d","ic_eleven_day");
+        forecastIcons.put("11n","ic_eleven_night");
+        forecastIcons.put("13d","ic_thirteen_day");
+        forecastIcons.put("13n","ic_thirteen_night");
+        forecastIcons.put("50d","ic_fifty_day");
+        forecastIcons.put("50n","ic_fifty_night");
+        String iconFile = forecastIcons.get(forecastIcon);
+        if(iconFile != null) {
+            if (!iconFile.isEmpty()) {
+                String PACKAGE_NAME = getApplicationContext().getPackageName();
+                int imgId = getResources().getIdentifier(PACKAGE_NAME + ":drawable/" + iconFile, null, null);
+                imForecastIcon.setImageBitmap(BitmapFactory.decodeResource(getResources(), imgId));
+            } else {
+                imForecastIcon.setImageResource(R.drawable.ic_pressure);
+            }
+
+        }
+
     }
 
     private class weatherTask extends AsyncTask<String, Void, String>{
@@ -278,40 +372,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private void setForecastIcon(String forecastIcon,ImageView imForecastIcon)
-        {
-//            https://openweathermap.org/weather-conditions
-            forecastIcons.put("01d","ic_one_day");
-            forecastIcons.put("01n","ic_one_night");
-            forecastIcons.put("02d","ic_two_day");
-            forecastIcons.put("02n","ic_two_night");
-            forecastIcons.put("03d","ic_three_day");
-            forecastIcons.put("03n","ic_three_night");
-            forecastIcons.put("04d","ic_four_day");
-            forecastIcons.put("04n","ic_four_night");
-            forecastIcons.put("09d","ic_nine_day");
-            forecastIcons.put("09n","ic_nine_night");
-            forecastIcons.put("10d","ic_ten_day");
-            forecastIcons.put("10n","ic_ten_night");
-            forecastIcons.put("11d","ic_eleven_day");
-            forecastIcons.put("11n","ic_eleven_night");
-            forecastIcons.put("13d","ic_thirteen_day");
-            forecastIcons.put("13n","ic_thirteen_night");
-            forecastIcons.put("50d","ic_fifty_day");
-            forecastIcons.put("50n","ic_fifty_night");
-            String iconFile = forecastIcons.get(forecastIcon);
-            if(!iconFile.isEmpty())
-            {
-                String PACKAGE_NAME = getApplicationContext().getPackageName();
-                int imgId = getResources().getIdentifier(PACKAGE_NAME+":drawable/"+iconFile , null, null);
-                imForecastIcon.setImageBitmap(BitmapFactory.decodeResource(getResources(),imgId));
-            }
-            else {
-                imForecastIcon.setImageResource(R.drawable.ic_pressure);
-            }
 
-
-
-        }
     }
 }

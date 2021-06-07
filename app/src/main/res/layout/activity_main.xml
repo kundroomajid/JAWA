@@ -89,7 +89,7 @@
                     android:textColor="@color/design_default_color_background"
                     android:textSize="70sp"
                     android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:visibility="gone" />
                 <TextView
                     android:id="@+id/text_temperature"
                     android:layout_width="wrap_content"
