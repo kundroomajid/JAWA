@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -142,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("pressure",tvPressure.getText().toString());
         editor.putString("windSpeed",tvWindSpeed.getText().toString());
         editor.putString("forecastIcon",forecastIcon);
+        if(updatedAt != null)
+        {
+            editor.putLong("lastUpdatedAt",updatedAt);
+        }
         editor.commit();
     }
 
@@ -325,35 +328,42 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject wind = jsonObj.getJSONObject("wind");
                     JSONObject sys = jsonObj.getJSONObject("sys");
                     cityName = jsonObj.getString("name");
-                    countryName = sys.getString("country");
-                    updatedAt = jsonObj.getLong("dt");
-                    updatedAtText = "Last Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
-                    temperature = main.getString("temp");
-                    forecastIcon = weather.getString("icon");
-                    forecast = weather.getString("description");
-                    humidity = main.getString("humidity");
-                    realFeel = main.getString("feels_like");
-                    pressure = main.getString("pressure");
-                    windSpeed = wind.getString("speed");
-                    rise = sys.getLong("sunrise");
-                    sunrises = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(rise * 1000));
-                    set = sys.getLong("sunset");
-                    sunsets = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(set * 1000));
-                    // SET ALL VALUES IN TEXTBOX :
-                    tvCityName.setText(cityName);
-                    tvCountryName.setText(countryName);
-                    tvLastUpdatedTime.setText(updatedAtText);
-                    tvTemperature.setText(temperature + "°C");
-                    tvForecast.setText(forecast);
-                    tvHumidity.setText(humidity);
-                    tvRealFeel.setText(realFeel);
-                    tvSunrises.setText(sunrises);
-                    tvSunsets.setText(sunsets);
-                    tvPressure.setText(pressure);
-                    tvWindSpeed.setText(windSpeed);
-                    //set icon here
-                    setForecastIcon(forecastIcon,imForecastIcon);
-                    toggleProgressStatus();
+                    if(!cityName.equals("Globe")) {
+                        countryName = sys.getString("country");
+                        updatedAt = jsonObj.getLong("dt");
+                        updatedAtText = "Last Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
+                        temperature = main.getString("temp");
+                        forecastIcon = weather.getString("icon");
+                        forecast = weather.getString("description");
+                        humidity = main.getString("humidity");
+                        realFeel = main.getString("feels_like");
+                        pressure = main.getString("pressure");
+                        windSpeed = wind.getString("speed");
+                        rise = sys.getLong("sunrise");
+                        sunrises = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(rise * 1000));
+                        set = sys.getLong("sunset");
+                        sunsets = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(set * 1000));
+                        // SET ALL VALUES IN TEXTBOX :
+                        tvCityName.setText(cityName);
+                        tvCountryName.setText(countryName);
+                        tvLastUpdatedTime.setText(updatedAtText);
+                        tvTemperature.setText(temperature + "°C");
+                        tvForecast.setText(forecast);
+                        tvHumidity.setText(humidity);
+                        tvRealFeel.setText(realFeel);
+                        tvSunrises.setText(sunrises);
+                        tvSunsets.setText(sunsets);
+                        tvPressure.setText(pressure);
+                        tvWindSpeed.setText(windSpeed);
+                        //set icon here
+                        setForecastIcon(forecastIcon, imForecastIcon);
+                        toggleProgressStatus();
+                    }
+                    else
+                    {
+                        toggleProgressStatus();
+                        Toast.makeText(MainActivity.this, "Unable to detect Your Location please use search instead ", Toast.LENGTH_LONG).show();
+                    }
                 }
                 else if (responseCode == 404 )
                 {
