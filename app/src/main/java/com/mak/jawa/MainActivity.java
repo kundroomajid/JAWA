@@ -37,7 +37,7 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String API_KEY = "API_KEY_HERE";
+    private final String API_KEY = "5624ffafab761ff66e0136b356470496";
     private final String SHARED_PREF_FILE = "com.mak.jawa.preferences";
     private static final int REQUEST_LOCATION = 1;
     private GpsTracker gpsTracker;
@@ -95,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        getWeatherOnLocation();
+    }
+
+    private void getWeatherOnLocation()
+    {
         if (isNetworkAvailable())
         {
             toggleProgressStatus();
@@ -118,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
             snackbar.show();
         }
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -180,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
        if (forecast != null) {
            setForecastIcon(forecastIcon, imForecastIcon);
        }
+
 
     }
 
