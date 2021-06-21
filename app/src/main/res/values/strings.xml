@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">JAWA</string>
     <string name="enter_your_city_name">Enter Your City Name</string>
+    <string name="city">City</string>
+    <string name="day">Sat, 18 Jun</string>
+    <string name="na">---</string>
+    <string name="real_feel">Real Feel</string>
+    <string name="last_updated_at_na">Last Updated At : NA</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="_3_hourly_forecast">3 Hourly Forecast</string>
 </resources>
