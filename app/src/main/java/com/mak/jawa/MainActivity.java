@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CHECK_CODE = 3636;
     private final String SHARED_PREF_FILE = "com.mak.jawa.preferences";
     public static String PACKAGE_NAME = "";
-    private final String API_KEY = "Api Key";
+    private String API_KEY = "";
     public static Context mContext;
 
     RecyclerView recyclerView;
@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         PACKAGE_NAME = getApplicationContext().getPackageName();
         mContext = this;
-
+        API_KEY = getString(R.string.openweather_api_key);
+        Log.i("key", "onCreate: "+API_KEY);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         forecastIcons = new ForecastIcons();
         setContentView(R.layout.activity_main);
