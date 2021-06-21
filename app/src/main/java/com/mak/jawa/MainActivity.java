@@ -45,8 +45,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -369,10 +371,23 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(gpsReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
+    CancellationToken token = new CancellationToken() {
+        @Override
+        public boolean isCancellationRequested() {
+            return false;
+        }
+
+        @NonNull
+        @Override
+        public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+            return null;
+        }
+    };
+
     @SuppressLint("MissingPermission")
     private void getLastLoc()
     {
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+        fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, token).addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 if(location != null)
