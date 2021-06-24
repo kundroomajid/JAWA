@@ -3,6 +3,7 @@ package com.mak.jawa;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
         Date date;
         String dateTime = fcWeather.getDtTxt();
         try {
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             date = formatter.parse(dateTime);
             String time = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(date);
             String datetxt = new SimpleDateFormat("EEE, d MMM",Locale.ENGLISH).format(date);

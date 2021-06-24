@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         PACKAGE_NAME = getApplicationContext().getPackageName();
         mContext = this;
         API_KEY = getString(R.string.openweather_api_key);
-        Log.i("key", "onCreate: "+API_KEY);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         forecastIcons = new ForecastIcons();
         setContentView(R.layout.activity_main);
@@ -148,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_FINE_LOCATION);
+        }
         if(isNetworkAvailable())
         {
             locationRequest = setLocationRequest();
@@ -278,10 +280,6 @@ public class MainActivity extends AppCompatActivity {
     {
         if(!isGpsEnabled())
         {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_FINE_LOCATION);
-            }
-
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
             Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(this).checkLocationSettings(builder.build());
 
